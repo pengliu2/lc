@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <set>
 #include <map>
+#include <unistd.h>
 
 using namespace std;
 
@@ -13,33 +14,26 @@ public:
         map<int, int> netid;
         map<int, set<int>> m;
         for (auto &e : edges) {
-            int newid;
             if (netid.count(e[0]) != 0 && netid.count(e[1]) != 0) {
                 if (netid[e[0]] == netid[e[1]])
                     return e;
-                newid = min(netid[e[0]], netid[e[1]]);
             } else {
-                newid = e[0];
-                if (netid.count(e[0]) != 0){
-                    newid = netid[e[0]];
-                }
-                if (netid.count(e[1]) != 0) {
-                    newid = min(newid, netid[e[1]]);
-                }
+                if (netid.count(e[0]) == 0)
+                    netid[e[0]] = e[0];
+                if (netid.count(e[1]) == 0)
+                    netid[e[1]] = e[1];
             }
 
-            if (netid.count(e[0]) != 0 && newid != netid[e[0]]) {
+            int newid = min(netid[e[0]], netid[e[1]]);
+
+            if (netid[e[0]] != newid) {
                 set<int> v;
                 sync(e[0], netid, m, newid, v);
-            } else {
-                netid[e[0]] = newid;
             }
 
-            if (netid.count(e[1]) != 0 && newid != netid[e[1]]) {
+            if (netid[e[1]] != newid) {
                 set<int> v;
                 sync(e[1], netid, m, newid, v);
-            } else {
-                netid[e[1]] = newid;
             }
 
             m[e[0]].insert(e[1]);
