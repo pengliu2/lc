@@ -1,11 +1,12 @@
 #include <iostream>
+#include <iostream>
 #include "../myheader.h"
 
 
 class Solution {
 public:
-    bool canIWin(int maxChoosableInteger, int desiredTotal) {
-        if (desiredTotal <= maxChoosableInteger) return true;
+    vector<vector<int>> canIWin(int maxChoosableInteger, int desiredTotal) {
+        //if (desiredTotal <= maxChoosableInteger) return true;
 
         vector<vector<int>> m(maxChoosableInteger, vector<int>(0));
 
@@ -21,7 +22,7 @@ public:
             construct_next(m, i, maxChoosableInteger, max_sign);
         }
 
-        return m[desiredTotal%maxChoosableInteger][(1<<maxChoosableInteger)-1] == 1;
+        return m;
     }
 
     // given a target and left choosable integers
@@ -52,10 +53,7 @@ public:
                     break;
                 }
                 if (m[s][nsign] == -1) {
-                    if ((target == 40) && (sign == max_sign)) {
-                        cout << target << ": first take off " << takeoff << endl;
-                    }
-                    newrule[sign] = 1;
+                    newrule[sign] = takeoff;
                     must_lose = false;
                     break;
                 }
@@ -73,13 +71,18 @@ public:
 
 int main() {
     Solution slt;
-    bool ret = slt.canIWin(10, 40);
-    if (ret)
-        cout << "win" << endl;
-    else
-        cout << "no win" << endl;
+    auto m = slt.canIWin(10, 32);
+    long sign = 0x3BF;
+
+    for (int i = 10; i > 0; i--) {
+        int newvalue = 33 - i;
+        long newsign = sign ^ (1UL << (i-1));
+        cout << newvalue << "+" << newsign << ": first take off " << m[newvalue%10][newsign] << endl;
+    }
+
     char a;
     cin >> a;
+
     return 0;
 }
 
