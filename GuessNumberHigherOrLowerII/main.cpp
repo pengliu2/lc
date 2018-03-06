@@ -4,34 +4,25 @@
 class Solution {
 public:
     int getMoneyAmount(int n) {
-        vector<vector<int>> cache = vector<vector<int>>(n+1);
-        cache[0] = vector<int>{0, 0, 0};
-        cache[1] = vector<int>{0, 0, 0};
-        for (int i = 2; i < n+1; i++) {
-            int maxp = (i-1)*i/2;
-            int maxf = i;
-            int opt = 0;
-            for (int j = 1; j < i-1; j++) {
-                int left_p = cache[j][2];
-                int right_p = cache[i-j-1][1]*(j+2) + cache[i-j-1][2];
-                int p;
-                int fault;
-                if (left_p == right_p) {
-                    p = j + left_p;
-                    fault = cache[j][1];
-                } else {
-                    p = j + right_p;
-                    fault = cache[i-j-1][1];
-                }
-                if (p < maxp) {
-                    maxp = p;
-                    opt = j;
-                    maxf = fault;
-                }
-            }
-            cache[i] = vector<int>{opt, maxf, maxp};
+        vector<vector<int>> cache(n+1);
+        for(int i = 1; i <= n; i++) {
+            cache[i] = vector<int>(n+1, -1);
         }
-        return cache[n][2]+cache[n][1];
+        return dfs(cache, 1, n);
+    }
+
+    int dfs(vector<vector<int>> &cache, int start, int stop) {
+        if (start >= stop) return 0;
+        if (cache[start][stop] >= 0)
+            return cache[start][stop];
+        int maxp = INT_MAX;
+        for (int i = (start + stop)/2; i <= stop; i++) {
+            int p = i + max(dfs(cache, start, i-1), dfs(cache, i+1, stop));
+            if (p < maxp)
+                maxp = p;
+        }
+        cache[start][stop] = maxp;
+        return maxp;
     }
 };
 
