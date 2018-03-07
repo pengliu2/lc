@@ -5,14 +5,16 @@ class Solution {
 public:
     vector<int> countBits(int num) {
         auto ret = vector<int>(num + 1);
-        for (int i = 0; i < num+1; i++) {
-            int n = i;
-            int t = 0;
-            while (n > 0) {
-                if ((n & 0x01UL) != 0) t++;
-                n = n >> 1;
+        ret[0] = 0;
+        ret[1] = 1;
+        int up = 4;
+        int low = 2;
+        for (int i = 2; i < num+1; i++) {
+            if (i == up) {
+                up *= 2;
+                low *= 2;
             }
-            ret[i] = t;
+            ret[i] = 1 + ret[i - low];
         }
         return ret;
     }
