@@ -11,18 +11,13 @@ public:
         }
         if (total % 2 != 0) return false;
 
-        sort(nums.begin(), nums.end(), [](const int a, const int b){return a>b;});
-        auto cache = set<int>();
-        cache.emplace(0);
-        for (int &i : nums) {
-            auto newcache = set<int>();
-            for (auto &j : cache) {
-                int r = j + i;
-                if (r * 2 == total) return true;
-                if (r * 2 > total) continue;
-                newcache.emplace(r);
+        vector<int> dp = vector<int>(total + 1, 0);
+        dp[0] = 1;
+        for (const int num : nums) {
+            for (int i = total; i >= 0; i--) {
+                if (dp[i]) dp[i+num] = 1;
             }
-            cache.insert(newcache.begin(), newcache.end());
+            if (dp[total/2]) return true;
         }
         return false;
     }
