@@ -15,26 +15,23 @@ class Solution {
 public:
     int findMaxForm(vector<string>& strs, int m, int n) {
         int size = strs.size();
-        vector<vector<vector<int>>> cache = vector<vector<vector<int>>>(2, vector<vector<int>>(m+1, vector<int>(n+1, 0)));
+        vector<vector<int>> cache = vector<vector<int>>(m+1, vector<int>(n+1, 0));
 
-        for (int i = 1; i <= size; i++) {
-            int n0 = count(strs[i - 1]);
-            int n1 = strs[i - 1].length() - n0;
-            for (int j = 0; j < m+1; j++) {
-                for (int k = 0; k < n+1; k++) {
-                        if (j >= n0 && k >= n1) {
-                            cache[i % 2][j][k] = max(cache[(i - 1) % 2][j][k], cache[(i - 1) % 2][j - n0][k - n1] + 1);
-                        } else {
-                            cache[i % 2][j][k] = cache[(i - 1) % 2][j][k];
-                        }
+        int i = 1;
+        for (const string & s : strs) {
+            int n0 = count(s);
+            int n1 = s.length() - n0;
+            for (int j = m; j >= n0; j--) {
+                for (int k = n; k >= n1; k--) {
+                    cache[j][k] = max(cache[j][k], cache[j - n0][k - n1] + 1);
                 }
             }
+            i++;
         }
-        return cache[size%2][m][n];
+        return cache[m][n];
     }
 
 };
-
 
 int main() {
     Solution slt;
