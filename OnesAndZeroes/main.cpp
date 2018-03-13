@@ -1,10 +1,10 @@
 #include <iostream>
 #include "../myheader.h"
 
-int count(const string & str, char a) {
+inline int count(const string & str) {
     int total = 0;
-    for (int i = 0; i < str.length(); i++) {
-        if (str[i] == a) {
+    for (const char c : str){
+        if (c == '0') {
             total++;
         }
     }
@@ -15,31 +15,29 @@ class Solution {
 public:
     int findMaxForm(vector<string>& strs, int m, int n) {
         int size = strs.size();
-        if (size == 0 ) return 0;
+        vector<vector<vector<int>>> cache = vector<vector<vector<int>>>(2, vector<vector<int>>(m+1, vector<int>(n+1, 0)));
 
-        auto cache = unordered_map<int, int>();
-        int ret = 0;
-        ret = dfs(strs, m, n, cache, 0);
-        return ret;
-    }
-
-    int dfs(vector<string>& strs, int m, int n, unordered_map<int, int> &cache, int index) {
-        if (cache.count(index) == 0) {
-            cache[index] = count(strs[index], '0');
+        for (int i = 1; i <= size; i++) {
+            int n0 = count(strs[i - 1]);
+            int n1 = strs[i - 1].length() - n0;
+            for (int j = 0; j < m+1; j++) {
+                for (int k = 0; k < n+1; k++) {
+                        if (j >= n0 && k >= n1) {
+                            cache[i % 2][j][k] = max(cache[(i - 1) % 2][j][k], cache[(i - 1) % 2][j - n0][k - n1] + 1);
+                        } else {
+                            cache[i % 2][j][k] = cache[(i - 1) % 2][j][k];
+                        }
+                }
+            }
         }
-        int newm = m - cache[i];
-        int newn = n - (strs[i].size() - cache[i]);
-
-        if (newm >= 0 && newn >= 0)
-             = max(ret, dfs(strs, newm, newn, used, cache)+1);
-        ret = max(ret, dfs(strs, m, n, used, cache));
-
-        return ret;
+        return cache[size%2][m][n];
     }
+
 };
 
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
-    return 0;
+    Solution slt;
+    vector<string> strs{"00", "000"};
+    return slt.findMaxForm(strs, 1, 10);
 }
