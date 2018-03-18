@@ -4,10 +4,10 @@
 class Solution {
 public:
     int shoppingOffers(vector<int>& price, vector<vector<int>>& special, vector<int>& needs) {
-        auto tcache = vector<unordered_map<int, int>>(37, unordered_map<int, int>());
+        auto tcache = unordered_map<int, int>();
         int total_items = price.size();
 
-        tcache[0][0] = 0;
+        tcache[0] = 0;
         int target = 0;
         for (int i = total_items - 1; i >= 0; i--) {
             target = (target << 4) + needs[i];
@@ -17,10 +17,7 @@ public:
         vector<int> cur(total_items);
 
         for (int k = 1; k <= 36; k++) {
-            auto & cache = tcache[k-1];
-            auto & ncache = tcache[k];
-
-            for (const auto & c : cache) {
+            for (const auto & c : tcache) {
                 int items = c.first;
                 int total_price = c.second;
                 for (int i = 0; i < total_items; i++) {
@@ -28,17 +25,6 @@ public:
                     items = items >> 4;
                 }
                 items = c.first;
-                for (int i = 0; i < total_items; i++) {
-                    if (cur[i] >= needs[i]) continue;
-
-                    int cur_items = items + (1 << (4*i));
-                    if (ncache.count(cur_items) == 0) {
-                        ncache[cur_items] = cache[items] + price[i];
-                    } else {
-                        ncache[cur_items] = min(ncache[cur_items], cache[items] + price[i]);
-                    }
-                }
-
                 for (const auto &s : special) {
                     int new_items = 0;
                     for (int i = total_items - 1; i >= 0; i--) {
@@ -50,20 +36,25 @@ public:
                     }
                     if (new_items < 0) continue;
 
-                    if (ncache.count(new_items) == 0) {
-                        ncache[new_items] = cache[items] + s[total_items];
+                    if (tcache.count(new_items) == 0) {
+                        tcache[new_items] = tcache[items] + s[total_items];
                     } else {
-                        ncache[new_items] = min(ncache[new_items], cache[items] + s[total_items]);
+                        tcache[new_items] = min(tcache[new_items], tcache[items] + s[total_items]);
                     }
                 }
             }
         }
-
         int ret = INT_MAX;
-        for (int i = 0; i < tcache.size(); i++) {
-            if (tcache[i].count(target)) {
-                ret = min(ret, tcache[i][target]);
+        for (const auto & c: tcache) {
+            int items = c.first;
+            int p = c.second;
+            for (int i = 0; i < total_items; i++) {
+                cur[i] = items & 0x0F;
+                items = items >> 4;
+                cur[i] = needs[i] - cur[i];
+                p += cur[i] * price[i];
             }
+            ret = min(ret, p);
         }
         return ret;
     }
