@@ -5,4 +5,5 @@
 #include <iostream>
 #include <climits>
 #include <algorithm>
+#include <numeric>
 using namespace std;
