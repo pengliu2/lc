@@ -10,27 +10,14 @@
 class Solution {
 public:
     int findLength(vector<int>& A, vector<int>& B) {
-        auto iB = vector<int>(100, 0);
-        for (int i = 0; i < B.size(); i++) {
-            iB[B[i]] = 1;
-        }
+        auto cache = vector<vector<int>>(A.size() + 1, vector<int>(B.size() + 1, 0));
         int ret = 0;
-        for (int i = 0; i + ret < A.size(); i++) {
-            if (iB[A[i]]==0) {
-                continue;
-            }
-            for (int j = 0; j + ret < B.size(); j++) {
-                if (B[j] != A[i]) continue;
-                int len = 0;
-                int m = i;
-                for (int k = j; k < B.size() && m < A.size(); k++,m++) {
-                    if (B[k] != A[m]) break;
-                    len += 1;
-                }
-                ret = max(ret, len);
+        for (int i = A.size()-1; i >= 0; i--) {
+            for (int j = B.size()-1; j>= 0; j--) {
+                cache[i][j] = A[i] == B[j] ? cache[i-1][j-1] + 1 : 0;
+                ret = max(ret, cache[i][j]);
             }
         }
-
         return ret;
     }
 };
