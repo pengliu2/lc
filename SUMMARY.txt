@@ -1,0 +1,8 @@
+* best time to buy and sell stock:
+** I have a leetcode session for this
+** totally 6 questions
+   - one transaction
+   - 2 transactions
+   - k transactions
+   - with transaction fee
+   - with cooldown
