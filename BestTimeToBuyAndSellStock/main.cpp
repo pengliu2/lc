@@ -5,6 +5,21 @@
  * 1. vector::back() has different meaning
  * */
 
+class Solution_for_II {
+public:
+    int maxProfit(vector<int>& prices) {
+        if (prices.size() < 2) return 0;
+        int keep = INT_MIN;
+        int finish = 0;
+        for (int i = 0; i < prices.size(); i++) {
+            int prev_finish = finish;
+            finish = max(finish, keep + prices[i]);
+            keep = max(keep, prev_finish - prices[i]);
+        }
+        return finish;
+    }
+};
+
 class SolutionII {
 public:
     int maxProfit(vector<int>& prices) {
