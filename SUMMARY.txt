@@ -6,3 +6,26 @@
    - k transactions
    - with transaction fee
    - with cooldown
+
+* union find
+** several different types
+   - find a cycle: Redundant Connection
+   - separate lands: Couples Holding Hands, Friend Circles
+   - compute connected node's numder: Longest Consecutive Sequence
+
+** find a cycle:
+   - like Redundant Connection, even the problem description
+     states the rules define a tree. Actually it doesn't matter, tree
+     here only means all nodes connect without circle.
+   - so adding rules just mean to have another way to connect some
+     subsets of all nodes together
+   - so if there's a root for each side of the rule, that means they
+     belong to those smaller trees, let one tree's root's parent
+     another tree's root, then all nodes can find their common root
+     and know they are connected
+
+** compute connected node's number: Longest Consecutive Sequence
+   - have to keep immediate parent for each node like in finding a circyle
+   - because we haven't iterate all nodes to compute length
+
+
