@@ -28,4 +28,8 @@
    - have to keep immediate parent for each node like in finding a circyle
    - because we haven't iterate all nodes to compute length
 
-
+** template
+   I think I can make my own template for union find too: there could
+   always be a parent structure, each node of the problem could have a
+   rank, or label, or group id in parent structure, when do union,
+   just point one element to another element in parent structure. 
