@@ -2,3 +2,9 @@
 * dfs/dp dfs: time complexity and space complexity
 * 0-1 knapsack:
 ** Ones and Zeros: this is a special one, 2 dimensional problem
+
+* problems not solved
+** Redundant Correction II:
+*** first attempt failed because the problem requests to find an edge
+to remove, not the first violation edge
+*** problem description isn't clear
