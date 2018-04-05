@@ -33,3 +33,7 @@
    always be a parent structure, each node of the problem could have a
    rank, or label, or group id in parent structure, when do union,
    just point one element to another element in parent structure. 
+
+   Actually there should be 2 structures: one for rules, the other for
+   group ids relataions.
+
