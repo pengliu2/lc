@@ -8,3 +8,7 @@
 *** first attempt failed because the problem requests to find an edge
 to remove, not the first violation edge
 *** problem description isn't clear
+
+* after finishing union find, try graphics and dfs
+
+* then queue because facebook tests it
