@@ -14,20 +14,24 @@ class Solution {
 public:
     int findBottomLeftValue(TreeNode* root) {
         if (root == nullptr) return 0;
-        vector<int> ret = dfs(root, 0);
-        return ret[0];
+        int dout = 0;
+        return  dfs(root, &dout);
     }
 
-    vector<int> dfs(TreeNode *root, int depth) {
-        vector<int> ret = vector<int>{root->val, depth};
+    int dfs(TreeNode *root, int *dout) {
+        int ret = root->val;
+        *dout = 1;
         if (root->left != nullptr) {
-            ret =  dfs(root->left, depth+1);
+            int d;
+            ret  =  dfs(root->left, &d);
+            *dout = d+1;
         }
         if (root->right != nullptr) {
-            vector<int> ret1 = dfs(root->right, depth+1);
-            if (ret1[1] > ret[1]) {
-                ret[0] = ret1[0];
-                ret[1] = ret1[1];
+            int d;
+            int ret1 = dfs(root->right, &d);
+            if (*dout < d+1) {
+                ret = ret1;
+                *dout = d+1;
             }
         }
         return ret;
