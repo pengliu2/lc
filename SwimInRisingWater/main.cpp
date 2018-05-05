@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <climits>
 
 using namespace std;
 
@@ -8,9 +9,79 @@ using namespace std;
  * 1. don't forget inner loop is cols, outer is rows
  * 2. because numbers in matrix are 0..cols*rows-1, we can just memorize their positions and only check 1 number per loop
  * 3. we can also not update numbers in grid. At time t, any numbers smaller than t can be connected.
+ * 4. if search is used, this problem is a one that fits Dijkstra algorithm, bfs based
+ * BinarySearchAndDFS:
+ * 5. someone implemented DFS using a trick that highest t <= N*N-1, using binary seach to check where's least working t
+ * 6. I implemented that DFS based algorithm. Trick is once node is visited, don't visit again for a validation, or TLE
+ * 7. so we must maintain another matrix, used.
  */
-
 class Solution {
+public:
+    int swimInWater(vector<vector<int>> &grid) {
+    }
+};
+
+class SolutionBinarySearchAndDFS {
+public:
+    int swimInWater(vector<vector<int>> &grid) {
+        row = grid.size();
+        col = grid[0].size();
+        int mint = grid[row-1][col-1];
+        int maxt = row * col - 1;
+        while (mint < maxt) {
+            int mid = mint + (maxt - mint)/2;
+            vector<vector<int>> used(row, vector<int>(col, 0));
+            if (validate(grid, mid, used)) {
+                maxt = mid;
+            } else {
+                mint = mid + 1;
+            }
+        }
+        return maxt;
+    }
+
+    bool validate(vector<vector<int>> &grid, int t, vector<vector<int>> &used) {
+        return helper(grid, 0, 0, t, used);
+    }
+
+    bool helper(vector<vector<int>> &grid, int r, int c, int t, vector<vector<int>> &used) {
+        if (r == row -1 && c == col - 1 ) {
+            return true;
+        }
+        if (!inGrid(r, c)) return false;
+        if (used[r][c] == 1) return false;
+        if (grid[r][c] > t) return false;
+
+        used[r][c] = 1;
+        if (helper(grid, r+1, c, t, used)) {
+            return true;
+        }
+        if (helper(grid, r, c+1, t, used)) {
+            return true;
+        }
+
+        if (helper(grid, r-1, c, t, used)) {
+            return true;
+        }
+        if (helper(grid, r, c-1, t, used)) {
+            return true;
+        }
+        return false;
+    }
+
+    bool inGrid(int r, int c) {
+        if (r >= row) return false;
+        if (c >= col) return false;
+        if (r < 0) return false;
+        if (c < 0) return false;
+        return true;
+    }
+private:
+    int row;
+    int col;
+};
+
+class SolutionUnionFind {
 public:
     int swimInWater(vector<vector<int>>& grid) {
         int rows = grid.size();
