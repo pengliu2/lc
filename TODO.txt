@@ -12,3 +12,4 @@ to remove, not the first violation edge
 * after finishing union find, try graphics and dfs
 
 * then queue because facebook tests it
+** 778 Swim in Rising Water can be solved with Dijkstra+priority_queue
