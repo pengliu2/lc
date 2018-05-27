@@ -14,6 +14,33 @@ using namespace std;
 class Solution {
 public:
     vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
+        vector<int> ans;
+        cache = vector<int>(graph.size(), 0);
+        for (int i = 0; i < graph.size(); i++) {
+            if (check(graph, i)) ans.push_back(i);
+        }
+        return ans;
+    }
+private:
+    vector<int> cache;
+
+    bool check(vector<vector<int>>& graph, int node) {
+        if (cache[node] != 0) return cache[node] == 1;
+        cache[node] = -2;
+        for (const auto n : graph[node]) {
+            if (check(graph, n) == false) {
+                cache[node] = -1;
+                return false;
+            }
+        }
+        cache[node] = 1;
+        return true;
+    }
+};
+
+class SolutionI {
+public:
+    vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
         vector<int> ret;
         safe = vector<int>(graph.size(), 0);
         for (int i = 0; i < graph.size(); i++) {
