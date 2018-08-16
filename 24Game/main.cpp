@@ -4,7 +4,7 @@
 
 using namespace std;
 
-class Solution {
+class SolutionI {
 public:
     bool judgePoint24(vector<int>& nums) {
         vector<int> cache = vector<int>(4, 0);

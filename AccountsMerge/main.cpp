@@ -3,11 +3,16 @@
 #include <vector>
 #include <map>
 #include <algorithm>
+#include <set>
+
 
 using namespace std;
 
 /*
- * reminder:
+ * reminder for SolutionII:
+ * 1. iterator cannot be const in for loop
+ *
+ * reminder for SolutionI:
  * 1. for this problem, rank doesn't matter because each node directly connect to root
  * 2. 1 is wrong, ranks do matter: 2 trees might be merged at the end of accounts list
  * 3. for this problem, first string is name, has to be handled separately when iterate rules
@@ -15,6 +20,137 @@ using namespace std;
  */
 
 class Solution {
+public:
+    vector<vector<string>> accountsMerge(vector<vector<string>>& accounts) {
+        map<string, int> email_to_group;
+        vector<vector<int>> grouping(accounts.size(), vector<int>(2, -1));
+        for (int i = 0; i < accounts.size(); i++) {
+            grouping[i][0] = i;
+            grouping[i][1] = 1;
+        }
+
+        for (int i = 0; i < accounts.size(); i++) {
+            for (int j = 1; j < accounts[i].size(); j++) {
+                if (email_to_group.count(accounts[i][j])) {
+                    unite(grouping, email_to_group[accounts[i][j]], i);
+                } else {
+                    email_to_group[accounts[i][j]] = i;
+                }
+            }
+        }
+        
+        map<int, set<string>> results;
+        map<int, string> names;
+        for (auto iter = email_to_group.begin(); iter != email_to_group.end(); iter++) {
+            int g = find(grouping, iter->second);
+            if (results.count(g) == 0) {
+                results[g] = set<string>{iter->first};
+                names[g] = string(accounts[g][0]);
+            } else {
+                results[g].insert(iter->first);
+            }
+        }
+
+        vector<vector<string>> ans;
+
+        for (auto iter = results.begin(); iter != results.end(); iter++) {
+            ans.push_back(vector<string>{names[iter->first]});
+            std::copy(iter->second.begin(), iter->second.end(), ans[ans.size()-1].begin()+1);
+        }
+        return ans;
+    }
+
+private:
+    int find(vector<vector<int>> &grouping, int i) {
+        if (grouping[i][0] == i) return i;
+        int ret = find(grouping, grouping[i][0]);
+        grouping[i][0] = ret;
+        return ret;
+    }
+
+    void unite(vector<vector<int>>& grouping, int i, int j) {
+        int p1 = find(grouping, i);
+        int p2 = find(grouping, j);
+        if (p1 == p2) return;
+        if (grouping[p1][1] > grouping[p2][1]) {
+            grouping[p2][0] = p1;
+        } else if (grouping[p2][1] > grouping[p1][1]) {
+            grouping[p1][0] = p2;
+        } else {
+            grouping[p1][0] = p2;
+            grouping[p2][1] += 1;
+        }
+    }
+
+};
+
+class SolutionII {
+public:
+    vector<vector<string>> accountsMerge(vector<vector<string>>& accounts) {
+        vector<int> grouping(accounts.size(), -1);
+        for (int i = 0; i < accounts.size(); i++) {
+            grouping[i] = i;
+        }
+
+        for (int i = 0; i < accounts.size(); i++) {
+            for (int j = 0; j < accounts.size(); j++) {
+                if (helper(accounts, i, j)) {
+                    unite(grouping, i, j);
+                }
+            }
+        }
+
+        vector<set<string>> results;
+        for (int i = 0; i < grouping.size(); i++) {
+            int g = find(grouping, i);
+            if (g >= results.size()) {
+                results.push_back(set<string>{accounts[i].begin()+1, accounts[i].end()});
+            } else {
+                results[g].insert(accounts[i].begin()+1, accounts[i].end());
+            }
+        }
+
+        vector<vector<string>> ans;
+        for (int i = 0; i < results.size(); i++) {
+            ans.push_back(vector<string>{results[i].begin(), results[i].end()});
+        }
+        return ans;
+    }
+
+private:
+    int find(vector<int>& grouping, int i) {
+        if (grouping[i] == i) return i;
+        int ret = find(grouping, grouping[i]);
+        grouping[i] = ret;
+        return ret;
+    }
+
+    int unite(vector<int>& grouping, int i, int j) {
+        int p1 = find(grouping, i);
+        int p2 = find(grouping, j);
+        if (p1 == p2) return p1;
+        if (p1 < p2) {
+            grouping[p2] = p1;
+            return p1;
+        } else {
+            grouping[p1] = p2;
+            return p2;
+        }
+    }
+
+    bool helper(vector<vector<string>>& accounts, int i1, int i2) {
+        if (accounts[i1][0] != accounts[i2][0]) return false;
+        for (int i = 1; i < accounts[i1].size(); i++) {
+            for (int j = 1; j < accounts[i2].size(); j++) {
+                if (accounts[i1][i] == accounts[i2][j]) return true;
+            }
+        }
+        return false;
+    }
+};
+
+
+class SolutionI {
 public:
     vector<vector<string>> accountsMerge(vector<vector<string>>& accounts) {
         map<string, int> umap;
