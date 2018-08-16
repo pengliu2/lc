@@ -17,3 +17,7 @@ to remove, not the first violation edge
 * Topological Sort? 329 Longest Increasing Path in a Matrix
 
 * facebook section TODO: 200, 
+
+* Tree traverse with stack
+
+* Tree BFS?

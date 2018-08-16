@@ -37,3 +37,14 @@
    Actually there should be 2 structures: one for rules, the other for
    group ids relataions.
 
+* binary search and variance
+
+** using mid = left + (right-left)/2 then right=mid or left=mid+1, or last element can't be reached
+
+** rotated sorted array
+*** even if target > mid, it might still be on the left side, must check if
+target < right
+
+*** even if target < mid, it might still be on the right side, much check if
+
+target > left
